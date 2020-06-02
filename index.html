@@ -1,0 +1,177 @@
+<html>
+  <head>
+    <title>MNIST in TensorFlow.js Layers API</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="tfjs-examples.css" />
+    <style>
+      #train {
+        margin-top: 10px;
+      }
+
+      label {
+        display: inline-block;
+        width: 250px;
+        padding: 6px 0 6px 0;
+      }
+
+      .canvases {
+        display: inline-block;
+      }
+
+      .prediction-canvas {
+        width: 100px;
+      }
+
+      .pred {
+        font-size: 20px;
+        line-height: 25px;
+        width: 100px;
+      }
+
+      .pred-correct {
+        background-color: #00cf1c;
+      }
+
+      .pred-incorrect {
+        background-color: red;
+      }
+
+      .pred-container {
+        display: inline-block;
+        width: 100px;
+        margin: 10px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="tfjs-example-container">
+      <section class="title-area">
+        <h1>
+          Train a simple Convolutional Neural Network without writing code!
+        </h1>
+        <p class="subtitle">
+          Train a CNN to recognize handwritten digits from the MNIST database
+          using the tf.layers api.
+        </p>
+      </section>
+
+      <section>
+        <p class="section-head">
+          Description
+        </p>
+        <p>
+          This examples lets you train a handwritten digit recognizer using
+          either a Convolutional Neural Network (also known as a ConvNet or CNN)
+          The CNN contains 3 conv2D layers with 16, 32, 32 3x3-filters
+          respectively. Each of the conv2D layers is followed by a maxPool2D
+          downsampling layer. After the convolutions, we flatten the output from
+          the 2D filters to a 1D vector to prepare it for input into our last
+          layer. This is common practice when feeding higher dimensional data to
+          a final classification output layer. Our last layer is a dense layer
+          which has 10 output units, one for each output class (i.e. 0, 1, 2, 3,
+          4, 5, 6, 7, 8, 9). Here the classes actually represent numbers, but
+          it's the same idea if you had classes that represented other entities
+          like dogs and cats (two output classes: 0, 1). We use the softmax
+          function as the activation for the output layer as it creates a
+          probability distribution over our 10 classes so their output values
+          sum to 1.
+        </p>
+        <p>The MNIST dataset is used as training data.</p>
+      </section>
+
+      <section>
+        <p class="section-head">Training Parameters</p>
+        <div>
+          <label>No. of training epochs:</label>
+          <input id="train-epochs" value="3" />
+        </div>
+        <div>
+          <label>Optimizer:</label>
+          <select id="optimizer">
+            <option>Adam</option>
+            <option>RMSprop</option>
+            <option>SGD</option>
+          </select>
+        </div>
+        <div>
+          <label>Learning Rate:</label>
+          <input id="learning-rate" value="0.003" />
+        </div>
+        <div>
+          <label>Batch Size:</label>
+          <input id="batch-size" value="640" />
+        </div>
+
+        <button id="train">Load Data and Train Model</button>
+      </section>
+
+      <section>
+        <p class="section-head">Training Progress</p>
+        <p id="status"></p>
+        <p id="message"></p>
+
+        <div id="stats">
+          <div class="canvases">
+            <label id="loss-label"></label>
+            <div id="loss-canvas"></div>
+          </div>
+          <div class="canvases">
+            <label id="accuracy-label"></label>
+            <div id="accuracy-canvas"></div>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <p class="section-head">Inference Examples</p>
+        <div id="images"></div>
+      </section>
+      <section>
+        <p class="section-head" id="heading">Visualise Layers</p>
+        <p>
+          Now, you can visualise the layers by seeing the transformation done on
+          image by each layer.
+        </p>
+        <div>
+          <p id="log" marginTop="1em"></p>
+        </div>
+        <button id="visualise-layer0" marginTop="1em">Visualise Layer-1</button>
+        <p marginTop="1em">Layer-1 is a conv2D layer with 16 filters.</p>
+        <div id="Layer0"></div>
+        <button id="visualise-layer1" marginTop="1em">Visualise Layer-2</button>
+        <p marginTop="1em">
+          Layer-2 is a downsampling layer that downsamples the input by a factor
+          of 2 in both dimensions.
+        </p>
+        <div id="Layer1"></div>
+        <button id="visualise-layer2" marginTop="1em">Visualise Layer-3</button>
+        <p marginTop="1em">Layer-3 is a conv2D layer with 32 filters.</p>
+        <div id="Layer2"></div>
+        <button id="visualise-layer3" marginTop="1em">Visualise Layer-4</button>
+        <p marginTop="1em">
+          Layer-4 is a downsampling layer that downsamples the input by a factor
+          of 2 in both dimensions.
+        </p>
+        <div id="Layer3"></div>
+        <button id="visualise-layer4" marginTop="1em">Visualise Layer-5</button>
+        <p marginTop="1em">Layer-5 is a conv2D layer with 32 filters.</p>
+        <div id="Layer4"></div>
+        <button id="visualise-layer5" marginTop="1em">Visualise Layer-6</button>
+        <p marginTop="1em">Layer-6 is a flattening layer</p>
+        <div id="Layer5"></div>
+        <button id="visualise-layer6" marginTop="1em">Visualise Layer-7</button>
+        <p marginTop="1em">Layer-7 is a dense layer with 64 units.</p>
+        <div id="Layer6"></div>
+        <button id="visualise-layer7" marginTop="1em">Visualise Layer-8</button>
+        <p marginTop="1em">
+          Layer-8 is also a dense layer, but it has 10 units. One for each type
+          of output.
+        </p>
+        <div id="Layer7"></div>
+      </section>
+    </div>
+    <script src="index.js"></script>
+  </body>
+</html>
