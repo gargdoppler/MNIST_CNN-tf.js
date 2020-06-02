@@ -1,5 +1,4 @@
-TensorFlow.js
-
+MNIST_CNN-tf.js
 This repository contains a CNN implemented in TensorFlow.js.
 
 Dependencies
@@ -11,11 +10,11 @@ Yarn
 How to build an example
 cd into the directory
 
-If you are using yarn:
+If you are using ```yarn```:
+```cd MNIST```
+```yarn```
+```yarn watch```
 
-cd MNIST
-yarn
-yarn watch
 
 Details
 The CNN contains two scripts:
