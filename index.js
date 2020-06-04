@@ -252,48 +252,59 @@ async function load() {
   await data.load();
 }
 
-let ex;
-async function visualiseLayer0() {
+let output = [];
+async function cla() {
+  let ex;
   ex = new MnistData();
-  ui.logVisualise("Fetching Example...");
   await ex.load();
   const num = 1;
   const vi_image = ex.getTestData(num);
   const model = createModel();
   model.setWeights(weights);
-  var input = vi_image.xs;
   var layers = model.layers;
-  for (var i = 0; i < 8; i++) {
-    console.log(i);
-    var layer = layers[i];
-    var output = layer.apply(input);
-    input = output;
-    ui.showLayer(output, i);
-  }
-  ui.logVisualise("");
-  // document.getElementById("Layer0").style.display = "block";
+  output[0] = layers[0].apply(vi_image.xs);
+  output[1] = layers[1].apply(output[0]);
+  output[2] = layers[2].apply(output[1]);
+  output[3] = layers[3].apply(output[2]);
+  output[4] = layers[4].apply(output[3]);
+  output[5] = layers[5].apply(output[4]);
+  output[6] = layers[6].apply(output[5]);
+  output[7] = layers[7].apply(output[6]);
+}
+
+async function visualiseLayer0() {
+  await cla();
+  ui.showLayer(output[0], document.getElementById("Layer0"));
 }
 async function visualiseLayer1() {
-  document.getElementById("Layer1").style.display = "block";
+  await cla();
+  ui.showLayer(output[1], document.getElementById("Layer1"));
 }
 async function visualiseLayer2() {
-  document.getElementById("Layer2").style.display = "block";
+  await cla();
+  ui.showLayer(output[2], document.getElementById("Layer2"));
 }
 async function visualiseLayer3() {
-  document.getElementById("Layer3").style.display = "block";
+  await cla();
+  ui.showLayer(output[3], document.getElementById("Layer3"));
 }
 async function visualiseLayer4() {
-  document.getElementById("Layer4").style.display = "block";
+  await cla();
+  ui.showLayer(output[4], document.getElementById("Layer4"));
 }
 async function visualiseLayer5() {
-  document.getElementById("Layer5").style.display = "block";
+  await cla();
+  ui.showDense(output[5], document.getElementById("Layer5"));
 }
 async function visualiseLayer6() {
-  document.getElementById("Layer6").style.display = "block";
+  await cla();
+  ui.showDense(output[6], document.getElementById("Layer6"));
 }
 async function visualiseLayer7() {
-  document.getElementById("Layer7").style.display = "block";
+  await cla();
+  ui.showDense(output[7], document.getElementById("Layer7"));
 }
+
 let weights;
 ui.setTrainButtonCallback(async () => {
   ui.logStatus("Loading MNIST data...");
@@ -311,6 +322,7 @@ ui.setTrainButtonCallback(async () => {
 ui.setVisualiseButton0Callback(async () => {
   await visualiseLayer0();
 });
+
 ui.setVisualiseButton1Callback(async () => {
   await visualiseLayer1();
 });

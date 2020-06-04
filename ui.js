@@ -3,14 +3,6 @@ const statusElement = document.getElementById("status");
 const messageElement = document.getElementById("message");
 const imagesElement = document.getElementById("images");
 const visualiseElement = document.getElementById("log");
-const Layer0Element = document.getElementById("Layer0");
-const Layer1Element = document.getElementById("Layer1");
-const Layer2Element = document.getElementById("Layer2");
-const Layer3Element = document.getElementById("Layer3");
-const Layer4Element = document.getElementById("Layer4");
-const Layer5Element = document.getElementById("Layer5");
-const Layer6Element = document.getElementById("Layer6");
-const Layer7Element = document.getElementById("Layer7");
 
 export function logStatus(message) {
   statusElement.innerText = message;
@@ -52,71 +44,40 @@ export function showTestResults(batch, predictions, labels) {
   }
 }
 
-export function showLayer(output, j) {
+export function showLayer(output, div) {
+  div.innerHTML = "";
   const numfilters = output.shape[3];
   const size = output.shape[1];
-  const div = document.createElement("div");
-  div.className = "row";
-  Layer0Element.innerHTML = "";
-  Layer1Element.innerHTML = "";
-  Layer2Element.innerHTML = "";
-  Layer3Element.innerHTML = "";
-  Layer4Element.innerHTML = "";
-  Layer5Element.innerHTML = "";
-  Layer6Element.innerHTML = "";
-  Layer7Element.innerHTML = "";
   for (let i = 0; i < numfilters; i++) {
     const image = output.slice([0, 0, 0, i], [1, size, size, 1]);
-    const div1 = document.createElement("div");
-    div1.className = "column";
     const canvas = document.createElement("canvas");
-    canvas.className = "layer1-canvas";
-    canvas.style.marginRight = "0.5em";
+    canvas.className = "layer-canvas";
     canvas.style.marginTop = "1em";
+    canvas.style.marginBottom = "1em";
     show(image.flatten(), canvas, size);
     div.appendChild(canvas);
-    switch (j) {
-      case 0:
-        Layer0Element.appendChild(div);
-        dLayer0.style.display = "none";
-        break;
-      case 1:
-        Layer1Element.appendChild(div);
-        document.getElementById("Layer1").style.display = "none";
-        break;
-      case 2:
-        Layer2Element.appendChild(div);
-        document.getElementById("Layer2").style.display = "none";
-        break;
-      case 3:
-        Layer3Element.appendChild(div);
-        document.getElementById("Layer3").style.display = "none";
-        break;
-      case 4:
-        Layer4Element.appendChild(div);
-        document.getElementById("Layer4").style.display = "none";
-        break;
-      case 5:
-        Layer5Element.appendChild(div);
-        document.getElementById("Layer5").style.display = "none";
-        break;
-      case 6:
-        Layer6Element.appendChild(div);
-        document.getElementById("Layer6").style.display = "none";
-        break;
-      case 7:
-        Layer7Element.appendChild(div);
-        document.getElementById("Layer7").style.display = "none";
-        break;
-      default:
-        console.log("no such element, lol");
-    }
+  }
+}
+
+export function showDense(output, div) {
+  div.innerHTML = "";
+  div.style.backgroundColor = "#EF6C00";
+  const numunits = output.shape[1];
+  for (let i = 0; i < numunits; i++) {
+    const unit = output.slice([0, i], [1, 1]);
+    const canvas = document.createElement("canvas");
+    canvas.className = "layer-canvas";
+    canvas.style.marginTop = "1em";
+    canvas.style.marginBottom = "1em";
+    showFC(unit.flatten(), canvas);
+    div.appendChild(canvas);
   }
 }
 
 const lossLabelElement = document.getElementById("loss-label");
 const accuracyLabelElement = document.getElementById("accuracy-label");
 const lossValues = [[], []];
+
 export function plotLoss(batch, loss, set) {
   const series = set === "train" ? 0 : 1;
   lossValues[series].push({ x: batch, y: loss });
@@ -168,6 +129,21 @@ export function show(image, canvas, size) {
     imageData.data[j + 2] = data[i] * 255;
     imageData.data[j + 3] = 255;
   }
+  ctx.putImageData(imageData, 0, 0);
+  ctx.drawImage(canvas, 0, 0, 4 * canvas.width, 4 * canvas.height);
+}
+
+export function showFC(unit, canvas) {
+  const [width, height] = [1, 1];
+  canvas.width = 10 * width;
+  canvas.height = 10 * height;
+  const ctx = canvas.getContext("2d");
+  const imageData = new ImageData(width, height);
+  const data = unit.dataSync();
+  imageData.data[0] = data[0] * 255;
+  imageData.data[1] = data[0] * 255;
+  imageData.data[2] = data[0] * 255;
+  imageData.data[3] = 255;
   ctx.putImageData(imageData, 0, 0);
   ctx.drawImage(canvas, 0, 0, 4 * canvas.width, 4 * canvas.height);
 }
