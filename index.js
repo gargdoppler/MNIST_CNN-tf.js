@@ -252,17 +252,311 @@ async function load() {
   await data.load();
 }
 
+let model;
+var canvasWidth = 280;
+var canvasHeight = 280;
+var canvasStrokeStyle = "white";
+var canvasLineJoin = "round";
+var canvasLineWidth = 10;
+var canvasBackgroundColor = "black";
+var canvasId = "canvas";
+var clickX = new Array();
+var clickY = new Array();
+var clickD = new Array();
+var drawing;
+var canvasBox = document.getElementById("canvas_box");
+var canvas = document.createElement("canvas");
+
+canvas.setAttribute("width", canvasWidth);
+canvas.setAttribute("height", canvasHeight);
+canvas.setAttribute("id", canvasId);
+canvas.style.backgroundColor = canvasBackgroundColor;
+canvasBox.appendChild(canvas);
+if (typeof G_vmlCanvasManager != "undefined") {
+  canvas = G_vmlCanvasManager.initElement(canvas);
+}
+
+const ctx = canvas.getContext("2d");
+//---------------------
+// MOUSE DOWN function
+//---------------------
+$("#canvas").mousedown(function (e) {
+  var rect = canvas.getBoundingClientRect();
+  var mouseX = e.clientX - rect.left;
+  var mouseY = e.clientY - rect.top;
+  drawing = true;
+  addUserGesture(mouseX, mouseY);
+  drawOnCanvas();
+});
+
+//-----------------------
+// TOUCH START function
+//-----------------------
+canvas.addEventListener(
+  "touchstart",
+  function (e) {
+    if (e.target == canvas) {
+      e.preventDefault();
+    }
+
+    var rect = canvas.getBoundingClientRect();
+    var touch = e.touches[0];
+
+    var mouseX = touch.clientX - rect.left;
+    var mouseY = touch.clientY - rect.top;
+
+    drawing = true;
+    addUserGesture(mouseX, mouseY);
+    drawOnCanvas();
+  },
+  false
+);
+
+//---------------------
+// MOUSE MOVE function
+//---------------------
+$("#canvas").mousemove(function (e) {
+  if (drawing) {
+    var rect = canvas.getBoundingClientRect();
+    var mouseX = e.clientX - rect.left;
+    var mouseY = e.clientY - rect.top;
+    addUserGesture(mouseX, mouseY, true);
+    drawOnCanvas();
+  }
+});
+
+//---------------------
+// TOUCH MOVE function
+//---------------------
+canvas.addEventListener(
+  "touchmove",
+  function (e) {
+    if (e.target == canvas) {
+      e.preventDefault();
+    }
+    if (drawing) {
+      var rect = canvas.getBoundingClientRect();
+      var touch = e.touches[0];
+
+      var mouseX = touch.clientX - rect.left;
+      var mouseY = touch.clientY - rect.top;
+
+      addUserGesture(mouseX, mouseY, true);
+      drawOnCanvas();
+    }
+  },
+  false
+);
+
+//-------------------
+// MOUSE UP function
+//-------------------
+$("#canvas").mouseup(function (e) {
+  drawing = false;
+});
+
+//---------------------
+// TOUCH END function
+//---------------------
+canvas.addEventListener(
+  "touchend",
+  function (e) {
+    if (e.target == canvas) {
+      e.preventDefault();
+    }
+    drawing = false;
+  },
+  false
+);
+//----------------------
+// MOUSE LEAVE function
+//----------------------
+$("#canvas").mouseleave(function (e) {
+  drawing = false;
+});
+
+//-----------------------
+// TOUCH LEAVE function
+//-----------------------
+canvas.addEventListener(
+  "touchleave",
+  function (e) {
+    if (e.target == canvas) {
+      e.preventDefault();
+    }
+    drawing = false;
+  },
+  false
+);
+
+//--------------------
+// ADD CLICK function
+//--------------------
+function addUserGesture(x, y, dragging) {
+  clickX.push(x);
+  clickY.push(y);
+  clickD.push(dragging);
+}
+
+//-------------------
+// RE DRAW function
+//-------------------
+function drawOnCanvas() {
+  ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+
+  ctx.strokeStyle = canvasStrokeStyle;
+  ctx.lineJoin = canvasLineJoin;
+  ctx.lineWidth = canvasLineWidth;
+
+  for (var i = 0; i < clickX.length; i++) {
+    ctx.beginPath();
+    if (clickD[i] && i) {
+      ctx.moveTo(clickX[i - 1], clickY[i - 1]);
+    } else {
+      ctx.moveTo(clickX[i] - 1, clickY[i]);
+    }
+    ctx.lineTo(clickX[i], clickY[i]);
+    ctx.closePath();
+    ctx.stroke();
+  }
+}
+
+//------------------------
+// CLEAR CANVAS function
+//------------------------
+$("#clear-button").click(async function () {
+  ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+  clickX = new Array();
+  clickY = new Array();
+  clickD = new Array();
+  $(".prediction-text").empty();
+  $("#result_box").addClass("d-none");
+});
+//-------------------------------------
+// loader for cnn model
+//-------------------------------------
+function initModel() {
+  model = createConvModel();
+  model.setWeights(weights);
+}
+
+//-----------------------------------------------
+// preprocess the canvas
+//-----------------------------------------------
+function preprocessCanvas(image) {
+  // resize the input image to target size of (1, 28, 28)
+  let tensor = tf.browser
+    .fromPixels(image)
+    .resizeNearestNeighbor([28, 28])
+    .mean(2)
+    .expandDims(2)
+    .expandDims()
+    .toFloat();
+  return tensor.div(255.0);
+}
+//--------------------------------------------
+// predict function
+//--------------------------------------------
+$("#predict-button").click(async function () {
+  await initModel();
+  // get image data from canvas
+  var imageData = canvas.toDataURL();
+
+  // preprocess canvas
+  let tensor = preprocessCanvas(canvas);
+
+  // make predictions on the preprocessed image tensor
+  let predictions = await model.predict(tensor).data();
+
+  // get the model's prediction results
+  let results = Array.from(predictions);
+  const data = [
+    { index: 0, value: 100 * results[0] },
+    { index: 1, value: 100 * results[1] },
+    { index: 2, value: 100 * results[2] },
+    { index: 3, value: 100 * results[3] },
+    { index: 4, value: 100 * results[4] },
+    { index: 5, value: 100 * results[5] },
+    { index: 6, value: 100 * results[6] },
+    { index: 7, value: 100 * results[7] },
+    { index: 8, value: 100 * results[8] },
+    { index: 9, value: 100 * results[9] },
+  ];
+
+  // Render to visor
+  const surface = { name: "Bar chart", tab: "Charts" };
+  tfvis.render.barchart(surface, data);
+  // display the predictions in chart
+  // $("#result_box").removeClass('d-none');
+  // displayChart(results);
+  // displayLabel(results);
+});
+//------------------------------
+// Chart to display predictions
+//------------------------------
+// var chart = "";
+// var firstTime = 0;
+// function loadChart(label, data, modelSelected) {
+//     var ctx = document.getElementById('chart_box').getContext('2d');
+//     chart = new Chart(ctx, {
+//         // The type of chart we want to create
+//         type: 'bar',
+
+//         // The data for our dataset
+//         data: {
+//             labels: label,
+//             datasets: [{
+//                 label: modelSelected + " prediction",
+//                 backgroundColor: '#f50057',
+//                 borderColor: 'rgb(255, 99, 132)',
+//                 data: data,
+//             }]
+//         },
+
+//         // Configuration options go here
+//         options: {}
+//     });
+// }
+
+//----------------------------
+// display chart with updated
+// drawing from canvas
+//----------------------------
+// function displayChart(data) {
+//     var select_option = "CNN";
+
+//     label = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
+//     if (firstTime == 0) {
+//         loadChart(label, data, select_option);
+//         firstTime = 1;
+//     } else {
+//         chart.destroy();
+//         loadChart(label, data, select_option);
+//     }
+//     document.getElementById('chart_box').style.display = "block";
+// }
+
+// function displayLabel(data) {
+//     var max = data[0];
+//     var maxIndex = 0;
+
+//     for (var i = 1; i < data.length; i++) {
+//         if (data[i] > max) {
+//             maxIndex = i;
+//             max = data[i];
+//         }
+//     }
+//     $(".prediction-text").html("Predicting you draw <b>"+maxIndex+"</b> with <b>"+Math.trunc( max*100 )+"%</b> confidence")
+// }
+
 let output = [];
 async function cla() {
-  let ex;
-  ex = new MnistData();
-  await ex.load();
-  const num = 1;
-  const vi_image = ex.getTestData(num);
+  var imageData = canvas.toDataURL();
+  let tensor = preprocessCanvas(canvas);
   const model = createModel();
   model.setWeights(weights);
   var layers = model.layers;
-  output[0] = layers[0].apply(vi_image.xs);
+  output[0] = layers[0].apply(tensor);
   output[1] = layers[1].apply(output[0]);
   output[2] = layers[2].apply(output[1]);
   output[3] = layers[3].apply(output[2]);
