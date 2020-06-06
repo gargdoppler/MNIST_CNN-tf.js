@@ -277,9 +277,7 @@ if (typeof G_vmlCanvasManager != "undefined") {
 }
 
 const ctx = canvas.getContext("2d");
-//---------------------
-// MOUSE DOWN function
-//---------------------
+
 $("#canvas").mousedown(function (e) {
   var rect = canvas.getBoundingClientRect();
   var mouseX = e.clientX - rect.left;
@@ -289,9 +287,6 @@ $("#canvas").mousedown(function (e) {
   drawOnCanvas();
 });
 
-//-----------------------
-// TOUCH START function
-//-----------------------
 canvas.addEventListener(
   "touchstart",
   function (e) {
@@ -312,9 +307,7 @@ canvas.addEventListener(
   false
 );
 
-//---------------------
-// MOUSE MOVE function
-//---------------------
+
 $("#canvas").mousemove(function (e) {
   if (drawing) {
     var rect = canvas.getBoundingClientRect();
@@ -325,9 +318,7 @@ $("#canvas").mousemove(function (e) {
   }
 });
 
-//---------------------
-// TOUCH MOVE function
-//---------------------
+
 canvas.addEventListener(
   "touchmove",
   function (e) {
@@ -348,16 +339,12 @@ canvas.addEventListener(
   false
 );
 
-//-------------------
-// MOUSE UP function
-//-------------------
+
 $("#canvas").mouseup(function (e) {
   drawing = false;
 });
 
-//---------------------
-// TOUCH END function
-//---------------------
+
 canvas.addEventListener(
   "touchend",
   function (e) {
@@ -368,16 +355,12 @@ canvas.addEventListener(
   },
   false
 );
-//----------------------
-// MOUSE LEAVE function
-//----------------------
+
 $("#canvas").mouseleave(function (e) {
   drawing = false;
 });
 
-//-----------------------
-// TOUCH LEAVE function
-//-----------------------
+
 canvas.addEventListener(
   "touchleave",
   function (e) {
@@ -389,18 +372,13 @@ canvas.addEventListener(
   false
 );
 
-//--------------------
-// ADD CLICK function
-//--------------------
 function addUserGesture(x, y, dragging) {
   clickX.push(x);
   clickY.push(y);
   clickD.push(dragging);
 }
 
-//-------------------
-// RE DRAW function
-//-------------------
+
 function drawOnCanvas() {
   ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
@@ -421,9 +399,7 @@ function drawOnCanvas() {
   }
 }
 
-//------------------------
-// CLEAR CANVAS function
-//------------------------
+
 $("#clear-button").click(async function () {
   ctx.clearRect(0, 0, canvasWidth, canvasHeight);
   clickX = new Array();
@@ -432,17 +408,13 @@ $("#clear-button").click(async function () {
   $(".prediction-text").empty();
   $("#result_box").addClass("d-none");
 });
-//-------------------------------------
-// loader for cnn model
-//-------------------------------------
+
 function initModel() {
   model = createConvModel();
   model.setWeights(weights);
 }
 
-//-----------------------------------------------
-// preprocess the canvas
-//-----------------------------------------------
+
 function preprocessCanvas(image) {
   // resize the input image to target size of (1, 28, 28)
   let tensor = tf.browser
@@ -454,9 +426,7 @@ function preprocessCanvas(image) {
     .toFloat();
   return tensor.div(255.0);
 }
-//--------------------------------------------
-// predict function
-//--------------------------------------------
+
 $("#predict-button").click(async function () {
   await initModel();
   // get image data from canvas
@@ -486,68 +456,7 @@ $("#predict-button").click(async function () {
   // Render to visor
   const surface = { name: "Bar chart", tab: "Charts" };
   tfvis.render.barchart(surface, data);
-  // display the predictions in chart
-  // $("#result_box").removeClass('d-none');
-  // displayChart(results);
-  // displayLabel(results);
 });
-//------------------------------
-// Chart to display predictions
-//------------------------------
-// var chart = "";
-// var firstTime = 0;
-// function loadChart(label, data, modelSelected) {
-//     var ctx = document.getElementById('chart_box').getContext('2d');
-//     chart = new Chart(ctx, {
-//         // The type of chart we want to create
-//         type: 'bar',
-
-//         // The data for our dataset
-//         data: {
-//             labels: label,
-//             datasets: [{
-//                 label: modelSelected + " prediction",
-//                 backgroundColor: '#f50057',
-//                 borderColor: 'rgb(255, 99, 132)',
-//                 data: data,
-//             }]
-//         },
-
-//         // Configuration options go here
-//         options: {}
-//     });
-// }
-
-//----------------------------
-// display chart with updated
-// drawing from canvas
-//----------------------------
-// function displayChart(data) {
-//     var select_option = "CNN";
-
-//     label = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
-//     if (firstTime == 0) {
-//         loadChart(label, data, select_option);
-//         firstTime = 1;
-//     } else {
-//         chart.destroy();
-//         loadChart(label, data, select_option);
-//     }
-//     document.getElementById('chart_box').style.display = "block";
-// }
-
-// function displayLabel(data) {
-//     var max = data[0];
-//     var maxIndex = 0;
-
-//     for (var i = 1; i < data.length; i++) {
-//         if (data[i] > max) {
-//             maxIndex = i;
-//             max = data[i];
-//         }
-//     }
-//     $(".prediction-text").html("Predicting you draw <b>"+maxIndex+"</b> with <b>"+Math.trunc( max*100 )+"%</b> confidence")
-// }
 
 let output = [];
 async function cla() {
