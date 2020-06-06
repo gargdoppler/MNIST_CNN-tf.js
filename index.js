@@ -358,9 +358,7 @@ canvas.addEventListener(
   false
 );
 
-//---------------------
-// MOUSE MOVE function
-//---------------------
+
 $("#canvas").mousemove(function (e) {
   if (drawing) {
     var rect = canvas.getBoundingClientRect();
@@ -371,9 +369,7 @@ $("#canvas").mousemove(function (e) {
   }
 });
 
-//---------------------
-// TOUCH MOVE function
-//---------------------
+
 canvas.addEventListener(
   "touchmove",
   function (e) {
@@ -394,16 +390,11 @@ canvas.addEventListener(
   false
 );
 
-//-------------------
-// MOUSE UP function
-//-------------------
 $("#canvas").mouseup(function (e) {
   drawing = false;
 });
 
-//---------------------
-// TOUCH END function
-//---------------------
+
 canvas.addEventListener(
   "touchend",
   function (e) {
@@ -422,9 +413,7 @@ $("#canvas").mouseleave(function (e) {
   drawing = false;
 });
 
-//-----------------------
-// TOUCH LEAVE function
-//-----------------------
+
 canvas.addEventListener(
   "touchleave",
   function (e) {
@@ -436,9 +425,6 @@ canvas.addEventListener(
   false
 );
 
-//--------------------
-// ADD CLICK function
-//--------------------
 function addUserGesture(x, y, dragging) {
   clickX.push(x);
   clickY.push(y);
@@ -468,9 +454,7 @@ function drawOnCanvas() {
   }
 }
 
-//------------------------
-// CLEAR CANVAS function
-//------------------------
+
 $("#clear-button").click(async function () {
   ctx.clearRect(0, 0, canvasWidth, canvasHeight);
   clickX = new Array();
@@ -479,12 +463,7 @@ $("#clear-button").click(async function () {
   $(".prediction-text").empty();
   $("#result_box").addClass("d-none");
 });
-//-------------------------------------
-// loader for cnn model
-//-------------------------------------
-//-----------------------------------------------
-// preprocess the canvas
-//-----------------------------------------------
+
 function preprocessCanvas(image) {
   // resize the input image to target size of (1, 28, 28)
   let tensor = tf.browser
@@ -496,9 +475,7 @@ function preprocessCanvas(image) {
     .toFloat();
   return tensor.div(255.0);
 }
-//--------------------------------------------
-// predict function
-//--------------------------------------------
+
 $("#predict-button").click(async function () {
   await initModel();
   // get image data from canvas
@@ -528,6 +505,7 @@ $("#predict-button").click(async function () {
   // Render to visor
   const surface = { name: "Bar chart", tab: "Charts" };
   tfvis.render.barchart(surface, data);
+  tfvis.visor();
   // display the predictions in chart
   // $("#result_box").removeClass("d-none");
   // displayChart(results);
