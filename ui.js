@@ -61,7 +61,6 @@ export function showLayer(output, div) {
 
 export function showDense(output, div) {
   div.innerHTML = "";
-  div.style.backgroundColor = "#EF6C00";
   const numunits = output.shape[1];
   for (let i = 0; i < numunits; i++) {
     const unit = output.slice([0, i], [1, 1]);
@@ -192,7 +191,6 @@ export function setTrainButtonCallback(callback) {
 export function setVisualiseButton0Callback(callback) {
   const visualiseButton = document.getElementById("visualise-layer0");
   visualiseButton.addEventListener("click", () => {
-    visualiseButton.setAttribute("disabled", true);
     callback();
   });
 }
@@ -200,14 +198,12 @@ export function setVisualiseButton0Callback(callback) {
 export function setVisualiseButton1Callback(callback) {
   const visualiseButton = document.getElementById("visualise-layer1");
   visualiseButton.addEventListener("click", () => {
-    visualiseButton.setAttribute("disabled", true);
     callback();
   });
 }
 export function setVisualiseButton2Callback(callback) {
   const visualiseButton = document.getElementById("visualise-layer2");
   visualiseButton.addEventListener("click", () => {
-    visualiseButton.setAttribute("disabled", true);
     callback();
   });
 }
@@ -221,28 +217,24 @@ export function setVisualiseButton3Callback(callback) {
 export function setVisualiseButton4Callback(callback) {
   const visualiseButton = document.getElementById("visualise-layer4");
   visualiseButton.addEventListener("click", () => {
-    visualiseButton.setAttribute("disabled", true);
     callback();
   });
 }
 export function setVisualiseButton5Callback(callback) {
   const visualiseButton = document.getElementById("visualise-layer5");
   visualiseButton.addEventListener("click", () => {
-    visualiseButton.setAttribute("disabled", true);
     callback();
   });
 }
 export function setVisualiseButton6Callback(callback) {
   const visualiseButton = document.getElementById("visualise-layer6");
   visualiseButton.addEventListener("click", () => {
-    visualiseButton.setAttribute("disabled", true);
     callback();
   });
 }
 export function setVisualiseButton7Callback(callback) {
   const visualiseButton = document.getElementById("visualise-layer7");
   visualiseButton.addEventListener("click", () => {
-    visualiseButton.setAttribute("disabled", true);
     callback();
   });
 }
