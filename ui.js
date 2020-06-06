@@ -183,7 +183,6 @@ export function getOptimizer() {
 export function setTrainButtonCallback(callback) {
   const trainButton = document.getElementById("train");
   trainButton.addEventListener("click", () => {
-    trainButton.setAttribute("disabled", true);
     callback();
   });
 }
