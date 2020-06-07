@@ -8520,22 +8520,27 @@ h1 {
   font-weight: 400; }
 
 p {
-  max-width: 960px;
+  max-width: 1500px;
   line-height: 1.6em;
   margin-bottom: 0.9em; }
 
 p.section-head {
+  font-size: larger;
   font-variant: small-caps;
   text-transform: uppercase;
   letter-spacing: 0.17em;
   line-height: 1.2em;
   font-weight: 500;
+  width:70em;
   margin-top: 2em;
   margin-bottom: 1em;
   border-left: 1px solid #EF6C00;
   padding-left: 24px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  background-color: #CBFF4D;
   margin-left: -24px;
-  color: #818181; }
+  color: #035aa6; }
 
 a {
   color: #3c3c3c;
