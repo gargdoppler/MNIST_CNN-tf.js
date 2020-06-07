@@ -91,7 +91,7 @@ export function plotLoss(batch, loss, set) {
       height: 300,
     }
   );
-  lossLabelElement.innerText = `last loss: ${loss.toFixed(3)}`;
+  lossLabelElement.innerText = `Last Loss: ${loss.toFixed(3)}`;
 }
 
 const accuracyValues = [[], []];
@@ -109,7 +109,7 @@ export function plotAccuracy(batch, accuracy, set) {
       height: 300,
     }
   );
-  accuracyLabelElement.innerText = `last accuracy: ${(accuracy * 100).toFixed(
+  accuracyLabelElement.innerText = `Last Accuracy: ${(accuracy * 100).toFixed(
     1
   )}%`;
 }
@@ -183,6 +183,7 @@ export function getOptimizer() {
 export function setTrainButtonCallback(callback) {
   const trainButton = document.getElementById("train");
   trainButton.addEventListener("click", () => {
+    trainButton.setAttribute("disabled", true);
     callback();
   });
 }
@@ -209,7 +210,6 @@ export function setVisualiseButton2Callback(callback) {
 export function setVisualiseButton3Callback(callback) {
   const visualiseButton = document.getElementById("visualise-layer3");
   visualiseButton.addEventListener("click", () => {
-    visualiseButton.setAttribute("disabled", true);
     callback();
   });
 }
