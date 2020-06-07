@@ -27,7 +27,7 @@ function createConvModel() {
     tf.layers.conv2d({
       inputShape: [IMAGE_H, IMAGE_W, 1],
       kernelSize: 3,
-      filters: 16,
+      filters: 8,
       activation: "relu",
     })
   );
@@ -39,7 +39,7 @@ function createConvModel() {
 
   // Our third layer is another convolution, this time with 32 filters.
   model.add(
-    tf.layers.conv2d({ kernelSize: 3, filters: 32, activation: "relu" })
+    tf.layers.conv2d({ kernelSize: 3, filters: 16, activation: "relu" })
   );
 
   // Max pooling again.
@@ -55,7 +55,7 @@ function createConvModel() {
   // higher dimensional data to a final classification output layer.
   model.add(tf.layers.flatten({}));
 
-  model.add(tf.layers.dense({ units: 64, activation: "relu" }));
+  model.add(tf.layers.dense({ units: 10, activation: "relu" }));
 
   // Our last layer is a dense layer which has 10 output units, one for each
   // output class (i.e. 0, 1, 2, 3, 4, 5, 6, 7, 8, 9). Here the classes actually
@@ -212,7 +212,7 @@ async function train(model, onIteration) {
  * @param {tf.Model} model The model to be used for making the predictions.
  */
 async function showPredictions(model) {
-  const testExamples = 11;
+  const testExamples = 14;
   const examples = data.getTestData(testExamples);
 
   // Code wrapped in a tf.tidy() function callback will have their tensors freed
@@ -358,7 +358,6 @@ canvas.addEventListener(
   false
 );
 
-
 $("#canvas").mousemove(function (e) {
   if (drawing) {
     var rect = canvas.getBoundingClientRect();
@@ -368,7 +367,6 @@ $("#canvas").mousemove(function (e) {
     drawOnCanvas();
   }
 });
-
 
 canvas.addEventListener(
   "touchmove",
@@ -394,7 +392,6 @@ $("#canvas").mouseup(function (e) {
   drawing = false;
 });
 
-
 canvas.addEventListener(
   "touchend",
   function (e) {
@@ -412,7 +409,6 @@ canvas.addEventListener(
 $("#canvas").mouseleave(function (e) {
   drawing = false;
 });
-
 
 canvas.addEventListener(
   "touchleave",
@@ -453,7 +449,6 @@ function drawOnCanvas() {
     ctx.stroke();
   }
 }
-
 
 $("#clear-button").click(async function () {
   ctx.clearRect(0, 0, canvasWidth, canvasHeight);
